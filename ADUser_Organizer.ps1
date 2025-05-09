@@ -79,8 +79,8 @@ if ($fileswitchcase -eq 1) {
 $smtpdomainvariable = @"
 *************************************
 * Enter your domain for Primary and *
-* Proxy email addresses.            *
-* Example: @contoso.com             *    
+* proxy email addresses.            *
+* Example: contoso.com              *    
 *************************************
 *DOMAIN:
 "@
@@ -113,36 +113,28 @@ $user404Errormessage = @"
 **********************************
 *USER: 
 "@
-
 $usernotfoundlist = @"
-
 **********************************
 *        USERS NOT FOUND:        *        
 **********************************
 *LIST:
 
 "@
-
 $managernotsetlist = @"
-
 **************************************
 *        MANAGER NOT SET FOR:        *        
 **************************************
 *LIST:
 
 "@
-
 $managernotfoundlist = @"
-
 *************************************
 *        MANAGERS NOT FOUND:        *        
 *************************************
 *LIST:
 
 "@ 
-
 $incorrectsmtplist = @"
-
 **********************************************
 *        PROXY ADDRESS INCORRECT FOR:        *        
 **********************************************
@@ -211,7 +203,7 @@ if ($safehouse -eq "yes") {
             Set-ADUser $_.SamAccountName -Company $_.Company
             Write-Host "Company:              $varcompany" -ForegroundColor Magenta
 
-            if ($varproxyaddress1 -like "smtp:*$smtpdomainvariable") {
+            if ($varproxyaddress1 -like "smtp:*@$smtpdomainvariable") {
                 Set-ADUser -Identity $_.SamAccountName -Add @{ProxyAddresses=$varproxyaddress1}
                 Write-Host "Proxy address 1:      $varproxyaddress1" -ForegroundColor DarkGray
             } elseif (!$varproxyaddress1){
@@ -224,7 +216,7 @@ if ($safehouse -eq "yes") {
                 $incorrectsmtplist = $incorrectsmtplist + " $varproxyaddress1 `n"
             }
 
-            if ($varproxyaddress2 -like "smtp:*$smtpdomainvariable") {
+            if ($varproxyaddress2 -like "smtp:*@$smtpdomainvariable") {
                 Set-ADUser -Identity $_.SamAccountName -Add @{ProxyAddresses=$varproxyaddress2}
                 Write-Host "Proxy address 2:      $varproxyaddress2" -ForegroundColor DarkGray
             } elseif (!$varproxyaddress2){
@@ -237,7 +229,7 @@ if ($safehouse -eq "yes") {
                 $incorrectsmtplist = $incorrectsmtplist + " $varproxyaddress2 `n"
             }
 
-            if ($varproxyaddress3 -like "smtp:*$smtpdomainvariable") {
+            if ($varproxyaddress3 -like "smtp:*@$smtpdomainvariable") {
                 Set-ADUser -Identity $_.SamAccountName -Add @{ProxyAddresses=$varproxyaddress3}
                 Write-Host "Proxy address 3:      $varproxyaddress3" -ForegroundColor DarkGray
             } elseif (!$varproxyaddress3){
