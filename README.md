@@ -15,4 +15,5 @@ Requires a CSV file with followed columns:
 7. Company – name of the company
 8. ProxyAddress1/2/3 – alias email addresses aka smtp (not to be confused with SMTP)
 
+In a perfect scenario, the task of filling 90% of the CSV file can be passed to non-softheaded HR (rare), and upon making sure that everything is correct, the script can be started on any scale of a company.
 Hope this saves you some time.
