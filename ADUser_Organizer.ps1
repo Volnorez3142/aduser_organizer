@@ -145,7 +145,6 @@ $incorrectsmtplist = @"
 if ($safehouse -eq "yes") { 
     $adusers | ForEach-Object {
         $error.clear()
-
         Try {
             $varsamaccname = Get-ADUser $_.SamAccountName
         } catch {
@@ -184,7 +183,6 @@ if ($safehouse -eq "yes") {
                 $managernotsetlist = $managernotsetlist + " $varusername `n"
             } else {
                 $error.clear()
-
                 Try {
                     $varmanagerinfo = Get-ADUser $varmanager
                 } catch {
@@ -254,10 +252,6 @@ Write-Host $usernotfoundlist -ForegroundColor Red
 Write-Host $managernotsetlist -ForegroundColor Red
 Write-Host $managernotfoundlist -ForegroundColor Red
 Write-Host $incorrectsmtplist -ForegroundColor Red
-Clear-Variable -Name usernotfoundlist
-Clear-Variable -Name managernotsetlist
-Clear-Variable -Name managernotfoundlist
-Clear-Variable -Name incorrectsmtplist
 
 #STOPPING THE TRANSCRIPT
 Write-Host " "
