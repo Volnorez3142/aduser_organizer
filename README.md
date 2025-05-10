@@ -17,3 +17,5 @@ Requires a CSV file with followed columns:
 
 In a perfect scenario, the task of filling 90% of the CSV file can be passed to non-softheaded HR (rare), and upon making sure that everything is correct, the script can be started on any scale of a company.
 Hope this saves you some time.
+
+As a matter of principle, **no AI was used upon writing this.**
