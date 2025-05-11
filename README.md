@@ -2,6 +2,8 @@ A mediocre attempt to automate the process of Active Directory user attribute an
 Instructions unwrap throughout the script itself.
 Not remotely ideal, but way-way better than updating 10+ amount of users manually.
 
+**As any other Powershell file, you might need to unlock this one before opening through RMB > Properties > Unlock.**
+
 The script refers to SamAccountName in order to grab the user from AD and change it's attributes, therefore the user should already be created before running the script.
 Doesn't get triggered if the proxy address' domain is set wrong, or if user or user's manager isn't found, but rather lists at the very end both the wrong proxy addresses, wrong users and wrong managers.
 
