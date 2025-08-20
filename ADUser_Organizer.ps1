@@ -175,6 +175,7 @@ if ($safehouse -eq "yes") {
             Set-ADUser $_.SamAccountName -Title $_.JobTitle
             Write-Host "Job title:            $varjobtitle" -ForegroundColor Yellow
             Set-ADUser -Identity $_.SamAccountName -Add @{ProxyAddresses="SMTP:$varprimaddress"}
+            Set-ADUser -Identity $_.SamAccountName -EmailAddress $varprimaddress
             Write-Host "Primary address:      $varprimaddress" -ForegroundColor DarkGray
             Set-ADUser $_.SamAccountName -Department $_.Department
             Write-Host "Department:           $vardepartment" -ForegroundColor DarkYellow
@@ -267,3 +268,4 @@ ___.           ________  ____   _____ ________
        END OF SCRIPT. PRESS ENTER TO EXIT.       
    THE TRANSCRIPT CAN BE FOUND ON THE DESKTOP.  
                         "
+
