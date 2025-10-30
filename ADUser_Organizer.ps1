@@ -80,7 +80,7 @@ $smtpdomainvariable = @"
 *************************************
 * Enter your domain for Primary and *
 * proxy email addresses.            *
-* Example: contoso.com              *    
+* Example: sakurada.lan             *    
 *************************************
 *DOMAIN:
 "@
@@ -106,7 +106,6 @@ Write-Output "You've entered: $safehouse"
 #DECLARING THE VARIABLES FOR ERROR MESSAGES, IMPORTING THE CSV FILE AND STARTING THE AD CONFIGURATION
 $adusers = Import-Csv -Path $filepath
 $proxyaddrErrormessage = "ERROR: WRONG DATA FORMAT. Correct data format: smtp:emailaddress$smtpdomainvariable"
-$okmessage = "OK!"
 $user404Errormessage = @"
 **********************************
 *        USER NOT FOUND!        *        
@@ -146,53 +145,42 @@ if ($safehouse -eq "yes") {
     $adusers | ForEach-Object {
         $error.clear()
         Try {
-            $varsamaccname = Get-ADUser $_.SamAccountName
+            $checksamaccname = Get-ADUser $_.SamAccountName
         } catch {
             #Catch function doesn't inherit from global environment so we gotta do an extra ifelse below
         }
         
         if ($error) {
-            $varsamaccError = $_.SamAccountName
+            #$varsamaccError = $_.SamAccountName
             Write-Output " "
-            Write-Host $user404Errormessage $varsamaccError -ForegroundColor Red
+            Write-Host $user404Errormessage $_.SamAccountName -ForegroundColor Red
             Write-Output "======================="
-            $usernotfoundlist = $usernotfoundlist + " $varsamaccError `n"
+            $usernotfoundlist = $usernotfoundlist + " $($_.SamAccountName) `n"
         } elseif (!$error) {
-            $varuserdisplayname = $varsamaccname.Name
-            $varjobtitle = $_.JobTitle
-            $vardepartment = $_.Department
-            $varusername = $_.SamAccountName
-            $varmanager = $_.ManagerSamAccName
-            $varcompany = $_.Company
-            $varprimaddress = $_.UserPrincipalName
-            $varproxyaddress1 = $_.ProxyAddress1
-            $varproxyaddress2 = $_.ProxyAddress2
-            $varproxyaddress3 = $_.ProxyAddress3
-
             Write-Output " "
-            Write-Host "User:                 $varuserdisplayname |" $_.SamAccountName -ForegroundColor Cyan
+            Write-Host "User:                 $($_.DisplayName) |" $_.SamAccountName -ForegroundColor Cyan
             Set-ADUser $_.SamAccountName -Description $_.JobTitle
             Set-ADUser $_.SamAccountName -Title $_.JobTitle
-            Write-Host "Job title:            $varjobtitle" -ForegroundColor Yellow
-            Set-ADUser -Identity $_.SamAccountName -Add @{ProxyAddresses="SMTP:$varprimaddress"}
-            Set-ADUser -Identity $_.SamAccountName -EmailAddress $varprimaddress
-            Write-Host "Primary address:      $varprimaddress" -ForegroundColor DarkGray
+            Write-Host "Job title:            $($_.JobTitle)" -ForegroundColor Yellow
+            Set-ADUser -Identity $_.SamAccountName -Add @{ProxyAddresses="SMTP:$($_.UserPrincipalName)"}
+            Set-ADUser -Identity $_.SamAccountName -EmailAddress $_.UserPrincipalName
+            Write-Host "Primary address:      $($_.UserPrincipalName)" -ForegroundColor DarkGray
             Set-ADUser $_.SamAccountName -Department $_.Department
-            Write-Host "Department:           $vardepartment" -ForegroundColor DarkYellow
-            if (!$varmanager) {
+            Write-Host "Department:           $($_.Department)" -ForegroundColor DarkYellow
+            if (!$_.ManagerSamAccName) {
                 Write-Host "Manager:              MANAGER NOT SET" -ForegroundColor Red
-                $managernotsetlist = $managernotsetlist + " $varusername `n"
+                $managernotsetlist = $managernotsetlist + " $($_.SamAccountName) `n"
             } else {
                 $error.clear()
                 Try {
-                    $varmanagerinfo = Get-ADUser $varmanager
+                    $varmanagerinfo = Get-ADUser $_.ManagerSamAccName
                 } catch {
                     #still not inheriting.
                 }
                 
                 if ($error) {
                     Write-Host "Manager:              MANAGER NOT FOUND" -ForegroundColor Red
-                    $managernotfoundlist = $managernotfoundlist + " $varmanager FOR $varusername `n"
+                    $managernotfoundlist = $managernotfoundlist + " $($_.ManagerSamAccName) FOR $($_.SamAccountName) `n"
                 } else {
                     $varmanagerdisplayname = $varmanagerinfo.Name
                     Set-ADUser $_.SamAccountName -Manager $_.ManagerSamAccName
@@ -200,48 +188,48 @@ if ($safehouse -eq "yes") {
                 }
             }
             Set-ADUser $_.SamAccountName -Company $_.Company
-            Write-Host "Company:              $varcompany" -ForegroundColor Magenta
+            Write-Host "Company:              $($_.Company)" -ForegroundColor Magenta
 
-            if ($varproxyaddress1 -like "smtp:*@$smtpdomainvariable") {
-                Set-ADUser -Identity $_.SamAccountName -Add @{ProxyAddresses=$varproxyaddress1}
-                Write-Host "Proxy address 1:      $varproxyaddress1" -ForegroundColor DarkGray
-            } elseif (!$varproxyaddress1){
+            if ($_.ProxyAddress1 -like "smtp:*@$smtpdomainvariable") {
+                Set-ADUser -Identity $_.SamAccountName -Add @{ProxyAddresses=$_.ProxyAddress1}
+                Write-Host "Proxy address 1:      $($_.ProxyAddress1)" -ForegroundColor DarkGray
+            } elseif (!$_.ProxyAddress1){
                 #SKIPPING
             } else {
                 Write-Output " "
                 Write-Host $proxyaddrErrormessage -ForegroundColor Red
-                Write-Output "Current ProxyAddr~1:  $varproxyaddress1"
+                Write-Output "Current ProxyAddr~1:  $($_.ProxyAddress1)"
                 Write-Output " "
-                $incorrectsmtplist = $incorrectsmtplist + " $varproxyaddress1 `n"
+                $incorrectsmtplist = $incorrectsmtplist + " $($_.ProxyAddress1) `n"
             }
 
-            if ($varproxyaddress2 -like "smtp:*@$smtpdomainvariable") {
-                Set-ADUser -Identity $_.SamAccountName -Add @{ProxyAddresses=$varproxyaddress2}
-                Write-Host "Proxy address 2:      $varproxyaddress2" -ForegroundColor DarkGray
-            } elseif (!$varproxyaddress2){
+            if ($_.ProxyAddress2 -like "smtp:*@$smtpdomainvariable") {
+                Set-ADUser -Identity $_.SamAccountName -Add @{ProxyAddresses=$_.ProxyAddress2}
+                Write-Host "Proxy address 2:      $($_.ProxyAddress2)" -ForegroundColor DarkGray
+            } elseif (!$_.ProxyAddress2){
                 #SKIPPING
             } else {
                 Write-Output " "
                 Write-Host $proxyaddrErrormessage -ForegroundColor Red
-                Write-Output "Current ProxyAddr~2:  $varproxyaddress2"
+                Write-Output "Current ProxyAddr~2:  $($_.ProxyAddress2)"
                 Write-Output " "
-                $incorrectsmtplist = $incorrectsmtplist + " $varproxyaddress2 `n"
+                $incorrectsmtplist = $incorrectsmtplist + " $($_.ProxyAddress2) `n"
             }
 
-            if ($varproxyaddress3 -like "smtp:*@$smtpdomainvariable") {
-                Set-ADUser -Identity $_.SamAccountName -Add @{ProxyAddresses=$varproxyaddress3}
-                Write-Host "Proxy address 3:      $varproxyaddress3" -ForegroundColor DarkGray
-            } elseif (!$varproxyaddress3){
+            if ($_.ProxyAddress3 -like "smtp:*@$smtpdomainvariable") {
+                Set-ADUser -Identity $_.SamAccountName -Add @{ProxyAddresses=$_.ProxyAddress3}
+                Write-Host "Proxy address 3:      $($_.ProxyAddress3)" -ForegroundColor DarkGray
+            } elseif (!$_.ProxyAddress3){
                 #SKIPPING
             } else {
                 Write-Output " "
                 Write-Host $proxyaddrErrormessage -ForegroundColor Red
-                Write-Output "Current ProxyAddr~3:  $varproxyaddress3"
+                Write-Output "Current ProxyAddr~3:  $($_.ProxyAddress3)"
                 Write-Output " "
-                $incorrectsmtplist = $incorrectsmtplist + " $varproxyaddress3 `n"
+                $incorrectsmtplist = $incorrectsmtplist + " $($_.ProxyAddress3) `n"
             }
 
-            Write-Host $okmessage -ForegroundColor DarkGreen
+            Write-Host "DONE!" -ForegroundColor DarkGreen
             Write-Output "======================="
         }
     }
@@ -268,4 +256,3 @@ ___.           ________  ____   _____ ________
        END OF SCRIPT. PRESS ENTER TO EXIT.       
    THE TRANSCRIPT CAN BE FOUND ON THE DESKTOP.  
                         "
-
