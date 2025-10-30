@@ -158,7 +158,7 @@ if ($safehouse -eq "yes") {
             $usernotfoundlist = $usernotfoundlist + " $($_.SamAccountName) `n"
         } elseif (!$error) {
             Write-Output " "
-            Write-Host "User:                 $($_.DisplayName) |" $_.SamAccountName -ForegroundColor Cyan
+            Write-Host "DisplayName | SAN:    $($_.DisplayName) |" $_.SamAccountName -ForegroundColor Cyan
             Set-ADUser $_.SamAccountName -Description $_.JobTitle
             Set-ADUser $_.SamAccountName -Title $_.JobTitle
             Write-Host "Job title:            $($_.JobTitle)" -ForegroundColor Yellow
