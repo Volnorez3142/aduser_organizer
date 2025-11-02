@@ -151,7 +151,6 @@ if ($safehouse -eq "yes") {
         }
         
         if ($error) {
-            #$varsamaccError = $_.SamAccountName
             Write-Output " "
             Write-Host $user404Errormessage $_.SamAccountName -ForegroundColor Red
             Write-Output "======================="
@@ -256,4 +255,5 @@ ___.           ________  ____   _____ ________
        END OF SCRIPT. PRESS ENTER TO EXIT.       
    THE TRANSCRIPT CAN BE FOUND ON THE DESKTOP.  
                         "
+
 
