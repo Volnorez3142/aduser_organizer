@@ -43,9 +43,10 @@ $switchcasemessage = @"
 * 4. Department - name of the new department [String]                 *
 * 5. ManagerSamAccName - username of the manager [String]             *
 * 6. Company - name of the new company [String]                       *
-* 7. ProxyAddress1 - additional proxy address [String]                *
-* 8. ProxyAddress2 - additional proxy address [String]                *
-* 9. ProxyAddress3 - additional proxy address [String]                *
+* 7. Mobile - user's mobile phone or messenger tag [String]           *
+* 8. ProxyAddress1 - additional proxy address [String]                *
+* 9. ProxyAddress2 - additional proxy address [String]                *
+* 10. ProxyAddress3 - additional proxy address [String]               *
 * ProxyAddress1/2/3 and manager fields can be left empty. All the     *
 * other fields are mandatory.                                         *
 ***********************************************************************
