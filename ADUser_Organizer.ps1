@@ -195,25 +195,17 @@ if ($safehouse -eq "yes") {
                 Set-ADUser $_.SamAccountName -Company $_.Company
                 Write-Host "Company:              $($_.Company)" -ForegroundColor Magenta
 
-                if ($_.Messenger) {
-                    Set-ADUser -Identity $_.SamAccountName -Mobile $_.Messenger
-                    Write-Host "Messenger:            $($_.Messenger)" -ForegroundColor DarkGray
-                } elseif (!$_.Messenger) {
-                    #SKIPPING
-                }
-
-                if ($_.MobilePhone) {
-                    Set-ADUser -Identity $_.SamAccountName -Mobile $_.MobilePhone
-                    Write-Host "Phone number:         $($_.MobilePhone)" -ForegroundColor DarkGray
-                } elseif (!$_.MobilePhone) {
-                    #SKIPPING
-                }
-
                 if ($_.Messenger -and $_.MobilePhone) {
                     Set-ADUser -Identity $_.SamAccountName -Mobile "$($_.Messenger), $($_.MobilePhone)"
                     Write-Host "Messenger:            $($_.Messenger)" -ForegroundColor DarkGray
                     Write-Host "Phone number:         $($_.MobilePhone)" -ForegroundColor DarkGray
-                } elseif (!$_.Messenger -and !$_.MobilePhone) {
+                } elseif ($_.Messenger -and !$_.MobilePhone) {
+                    Set-ADUser -Identity $_.SamAccountName -Mobile $_.Messenger
+                    Write-Host "Messenger:            $($_.Messenger)" -ForegroundColor DarkGray
+                } elseif (!$_.Messenger -and $_.MobilePhone) {
+                    Set-ADUser -Identity $_.SamAccountName -Mobile $_.MobilePhone
+                    Write-Host "Phone number:         $($_.MobilePhone)" -ForegroundColor DarkGray
+                } else {
                     #SKIPPING
                 }
 
