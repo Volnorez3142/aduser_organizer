@@ -43,10 +43,11 @@ $switchcasemessage = @"
 * 4. Department - name of the new department [String]                 *
 * 5. ManagerSamAccName - username of the manager [String]             *
 * 6. Company - name of the new company [String]                       *
-* 7. Mobile - user's mobile phone or messenger tag [String]           *
-* 8. ProxyAddress1 - additional proxy address [String]                *
-* 9. ProxyAddress2 - additional proxy address [String]                *
-* 10. ProxyAddress3 - additional proxy address [String]               *
+* 7. Messenger - user's messenger username [String]                   *
+* 8. MobilePhone - user's mobile phone number [String]                *
+* 9. ProxyAddress1 - additional proxy address [String]                *
+* 10. ProxyAddress2 - additional proxy address [String]               *
+* 11. ProxyAddress3 - additional proxy address [String]               *
 * ProxyAddress1/2/3 and manager fields can be left empty. All the     *
 * other fields are mandatory.                                         *
 ***********************************************************************
@@ -194,10 +195,25 @@ if ($safehouse -eq "yes") {
                 Set-ADUser $_.SamAccountName -Company $_.Company
                 Write-Host "Company:              $($_.Company)" -ForegroundColor Magenta
 
-                if ($_.Mobile) {
-                    Set-ADUser -Identity $_.SamAccountName -Mobile $_.Mobile
-                    Write-Host "Mobile:               $($_.Mobile)" -ForegroundColor DarkGray
-                } elseif (!$_.Mobile){
+                if ($_.Messenger) {
+                    Set-ADUser -Identity $_.SamAccountName -Mobile $_.Messenger
+                    Write-Host "Messenger:            $($_.Messenger)" -ForegroundColor DarkGray
+                } elseif (!$_.Messenger) {
+                    #SKIPPING
+                }
+
+                if ($_.MobilePhone) {
+                    Set-ADUser -Identity $_.SamAccountName -Mobile $_.MobilePhone
+                    Write-Host "Phone number:         $($_.MobilePhone)" -ForegroundColor DarkGray
+                } elseif (!$_.MobilePhone) {
+                    #SKIPPING
+                }
+
+                if ($_.Messenger -and $_.MobilePhone) {
+                    Set-ADUser -Identity $_.SamAccountName -Mobile "$($_.Messenger), $($_.MobilePhone)"
+                    Write-Host "Messenger:            $($_.Messenger)" -ForegroundColor DarkGray
+                    Write-Host "Phone number:         $($_.MobilePhone)" -ForegroundColor DarkGray
+                } elseif (!$_.Messenger -and !$_.MobilePhone) {
                     #SKIPPING
                 }
 
