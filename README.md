@@ -12,8 +12,9 @@ Requires a CSV file with followed columns:
 5. Department – name of the department
 6. ManagerSamAccName – user's manager's SamAccountName (not mandatory; required to set up the organizational structure)
 7. Company – name of the company
-8. Mobile - user's mobile phone number or messenger username (string, can contain any typе of info)
-9. ProxyAddress1/2/3 – alias email addresses aka the smtp (not to be confused with SMTP)
+8. Messenger - user's messenger username (Signal, Telegram)
+9. MobilePhone - user's mobile phone number
+10. ProxyAddress1/2/3 – alias email addresses aka the smtp (not to be confused with SMTP)
 
 The script refers to SamAccountName in order to grab the user from AD and change it's attributes, therefore the user should already be created before running the script.
 Doesn't get triggered if the proxy address' domain is set wrong, or if user or user's manager isn't found, but rather lists at the very end both the wrong proxy addresses, wrong users and wrong managers.
