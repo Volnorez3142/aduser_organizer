@@ -48,8 +48,8 @@ $switchcasemessage = @"
 * 9. ProxyAddress1 - additional proxy address [String]                *
 * 10. ProxyAddress2 - additional proxy address [String]               *
 * 11. ProxyAddress3 - additional proxy address [String]               *
-* ProxyAddress1/2/3 and manager fields can be left empty. All the     *
-* other fields are mandatory.                                         *
+* ProxyAddress1/2/3, Manager, Messenger and MobilePhone fields can be *
+* left empty. All the other fields are mandatory.                     *
 ***********************************************************************
 Input: 
 "@
