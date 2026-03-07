@@ -37,7 +37,7 @@ $switchcasemessage = @"
 * maintain the CSV file. Alternatively, you can select, copy and paste cells or entire    *
 * tables into both those programs from Excel (including the web app).                     *
 *                                                                                         *
-* The CSV file itself should include 12 columns with corresponding info.                  *
+* The CSV file itself should contain 12 columns with corresponding info.                  *
 * Those columns are:                                                                      *
 * 1. DisplayName - simply the name of the employee [String]                               *
 * 2. JobTitle - the job title [String]                                                    *
@@ -48,13 +48,16 @@ $switchcasemessage = @"
 * 7. Company - name of the company or office [String]                                     *
 * 8. Messenger - user's messenger username [String]                                       *
 * 9. MobilePhone - user's mobile phone number [String]                                    *
-* 10. ProxyAddress1 - additional proxy address (format: smtp:email@email.com) [String]    *
-* 11. ProxyAddress2 - additional proxy address (format: smtp:email@email.com) [String]    *
-* 12. ProxyAddress3 - additional proxy address (format: smtp:email@email.com) [String]    *
+* 10. ProxyAddress1 - additional proxy address or the smtp (format: smtp:email@email.com; *
+* NOT to be confused with SMTP)                                                           *
+* 11. ProxyAddress2 - additional proxy address or the smtp (format: smtp:email@email.com; *
+* NOT to be confused with SMTP) 
+* 12. ProxyAddress3 - additional proxy address or the smtp (format: smtp:email@email.com; *
+* NOT to be confused with SMTP)                                                           *
 *                                                                                         *
 * DisplayName, Manager, Messenger, MobilePhone and ProxyAddress1/2/3 fields can be left   *
-* since the script itself doesn't necessarily require them, at the same time collecting   *
-* invalid inputs into those fields and representing them at the very end.                 *
+* empty since the script itself doesn't necessarily require them, at the same time        *
+* collecting invalid inputs into those fields and listing them at the very end.           *
 * All the other fields are mandatory.                                                     *
 *******************************************************************************************
 Input: 
