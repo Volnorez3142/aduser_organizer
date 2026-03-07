@@ -1,6 +1,9 @@
 A mediocre attempt to automate the process of Active Directory user attribute and organization structure update.
 Instructions unwrap throughout the script itself.
-Not remotely ideal, but way-way better than updating 10+ amount of users manually.
+Not remotely ideal, but way better than updating 10+ amount of users manually.
+
+ModerCSV or LibreCalc is recommended to build and maintain the CSV file. Alternatively, both those programs can past cells from XLSX files.
+The reason is simple: Excel, upon opening a CSV file, "lowers the accuracy" of 15+ digit numbers (a phone number, for example), effectively transforming it into a text that states 9E+-something-something.
 
 **As any other Powershell file, you might need to unlock this one before opening through RMB > Properties > Unlock.**
 
