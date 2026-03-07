@@ -196,7 +196,7 @@ if ($safehouse -eq "yes") {
                 Write-Host "Company:              $($_.Company)" -ForegroundColor Magenta
 
                 if ($_.Messenger -and $_.MobilePhone) {
-                    Set-ADUser -Identity $_.SamAccountName -Mobile "$($_.Messenger), $($_.MobilePhone)"
+                    Set-ADUser -Identity $_.SamAccountName -Mobile "$($_.Messenger) | +$($_.MobilePhone)"
                     Write-Host "Messenger:            $($_.Messenger)" -ForegroundColor DarkGray
                     Write-Host "Phone number:         $($_.MobilePhone)" -ForegroundColor DarkGray
                 } elseif ($_.Messenger -and !$_.MobilePhone) {
@@ -276,3 +276,4 @@ ___.           ________  ____   _____ ________
        END OF SCRIPT. PRESS ENTER TO EXIT.       
    THE TRANSCRIPT CAN BE FOUND ON THE DESKTOP.  
                         "
+
