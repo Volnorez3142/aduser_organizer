@@ -17,40 +17,43 @@ Import-Module ActiveDirectory
 
 #SWITCH-CASE SCENARIO
 $switchcasemessage = @"
-***********************************************************************
-* 1. If this is your first time running this script, input 1 and the  *
-* script will create a directory and parse all Active Directory users'*
-* data into one CSV file.                                             *
-*                                                                     *
-*                                 |||                                 *
-*                                                                     *
-* 2. If you already have an adusers.csv updated and ready in C:\by3142*
-* input 2 and the program will start the corresponding attribute      *
-* update process.                                                     *
-*                                                                     *
-*                                 |||                                 *
-*                                                                     *
-* 3. If your file is ready, but is elsewhere or has a different name, *
-* input 3 to declare the filepath.                                    *
-*                                                                     *
-*                                 |||                                 *
-*                          [ADDITIONAL INFO]                          *
-* The CSV file should include 9 columns with corresponding info.      *
-* Those columns are:                                                  *
-* 1. SamAccountName - username (without the domain) [String]          *
-* 2. UserPrincipalName - primary email address [String]               *
-* 3. JobTitle - name of the new job title [String]                    *
-* 4. Department - name of the new department [String]                 *
-* 5. ManagerSamAccName - username of the manager [String]             *
-* 6. Company - name of the new company [String]                       *
-* 7. Messenger - user's messenger username [String]                   *
-* 8. MobilePhone - user's mobile phone number [String]                *
-* 9. ProxyAddress1 - additional proxy address [String]                *
-* 10. ProxyAddress2 - additional proxy address [String]               *
-* 11. ProxyAddress3 - additional proxy address [String]               *
-* ProxyAddress1/2/3, Manager, Messenger and MobilePhone fields can be *
-* left empty. All the other fields are mandatory.                     *
-***********************************************************************
+*******************************************************************************************
+* 1. If this is your first time running this script, input 1 and the script will create a *
+* directory and parse all Active Directory users' data into one CSV file.                 *
+*                                                                                         *
+*                                           |||                                           *
+*                                                                                         *
+* 2. If you already have an adusers.csv updated and ready in C:\by3142, input 2 and the   *
+* program will start the corresponding attribute update process.                          *
+*                                                                                         *
+*                                           |||                                           *
+*                                                                                         *
+* 3. If your file is ready, but is elsewhere or has a different name, input 3 to declare  *
+* the filepath.                                                                           *
+*                                                                                         *
+*                                           |||                                           *
+*                                    [ADDITIONAL INFO]                                    *
+* It is HEAVILY recommended to use either ModernCSV or LibreCalc in order to create or    *
+* maintain the CSV file. Alternatively, you can select, copy and paste cells or entire    *
+* tables into both those programs from Excel (including the web app).                     *
+*                                                                                         *
+* The CSV file itself should include 11 columns with corresponding info.                  *
+* Those columns are:                                                                      *
+* 1. SamAccountName - username (raw, without the domain) [String]                         *
+* 2. UserPrincipalName - primary email address (aka SMTP that is the login email) [String]*
+* 3. JobTitle - name of the job title [String]                                            *
+* 4. Department - name of the department [String]                                         *
+* 5. ManagerSamAccName - username of the manager (raw, without the domain) [String]       *
+* 6. Company - name of the company or office [String]                                     *
+* 7. Messenger - user's messenger username [String]                                       *
+* 8. MobilePhone - user's mobile phone number [String]                                    *
+* 9. ProxyAddress1 - additional proxy address (format: smtp:email@email.com) [String]     *
+* 10. ProxyAddress2 - additional proxy address (format: smtp:email@email.com) [String]    *
+* 11. ProxyAddress3 - additional proxy address (format: smtp:email@email.com) [String]    *
+*                                                                                         *
+* ProxyAddress1/2/3, Manager, Messenger and MobilePhone fields can be left empty.         *
+* All the other fields are mandatory.                                                     *
+*******************************************************************************************
 Input: 
 "@
 
@@ -276,4 +279,3 @@ ___.           ________  ____   _____ ________
        END OF SCRIPT. PRESS ENTER TO EXIT.       
    THE TRANSCRIPT CAN BE FOUND ON THE DESKTOP.  
                         "
-
