@@ -37,21 +37,24 @@ $switchcasemessage = @"
 * maintain the CSV file. Alternatively, you can select, copy and paste cells or entire    *
 * tables into both those programs from Excel (including the web app).                     *
 *                                                                                         *
-* The CSV file itself should include 11 columns with corresponding info.                  *
+* The CSV file itself should include 12 columns with corresponding info.                  *
 * Those columns are:                                                                      *
-* 1. SamAccountName - username (raw, without the domain) [String]                         *
-* 2. UserPrincipalName - primary email address (aka SMTP that is the login email) [String]*
-* 3. JobTitle - name of the job title [String]                                            *
-* 4. Department - name of the department [String]                                         *
-* 5. ManagerSamAccName - username of the manager (raw, without the domain) [String]       *
-* 6. Company - name of the company or office [String]                                     *
-* 7. Messenger - user's messenger username [String]                                       *
-* 8. MobilePhone - user's mobile phone number [String]                                    *
-* 9. ProxyAddress1 - additional proxy address (format: smtp:email@email.com) [String]     *
-* 10. ProxyAddress2 - additional proxy address (format: smtp:email@email.com) [String]    *
-* 11. ProxyAddress3 - additional proxy address (format: smtp:email@email.com) [String]    *
+* 1. DisplayName - simply the name of the employee [String]                               *
+* 2. JobTitle - the job title [String]                                                    *
+* 3. UserPrincipalName - primary email address (aka the SMTP (login email)) [String]      *
+* 4. SamAccountName - username (raw, without the domain) [String]                         *
+* 5. Department - name of the department [String]                                         *
+* 6. ManagerSamAccName - username of the manager (raw, without the domain) [String]       *
+* 7. Company - name of the company or office [String]                                     *
+* 8. Messenger - user's messenger username [String]                                       *
+* 9. MobilePhone - user's mobile phone number [String]                                    *
+* 10. ProxyAddress1 - additional proxy address (format: smtp:email@email.com) [String]    *
+* 11. ProxyAddress2 - additional proxy address (format: smtp:email@email.com) [String]    *
+* 12. ProxyAddress3 - additional proxy address (format: smtp:email@email.com) [String]    *
 *                                                                                         *
-* ProxyAddress1/2/3, Manager, Messenger and MobilePhone fields can be left empty.         *
+* DisplayName, Manager, Messenger, MobilePhone and ProxyAddress1/2/3 fields can be left   *
+* since the script itself doesn't necessarily require them, at the same time collecting   *
+* invalid inputs into those fields and representing them at the very end.                 *
 * All the other fields are mandatory.                                                     *
 *******************************************************************************************
 Input: 
