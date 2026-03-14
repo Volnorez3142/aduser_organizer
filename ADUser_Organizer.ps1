@@ -204,22 +204,45 @@ if ($safehouse -eq "yes") {
                 Set-ADUser $_.SamAccountName -Company $_.Company
                 Write-Host "Company:              $($_.Company)" -ForegroundColor Magenta
 
-                if ($_.Messenger -and $_.MobilePhone) {
-                    Set-ADUser -Identity $_.SamAccountName -Mobile "$($_.Messenger) | +$($_.MobilePhone)"
-                    Write-Host "Messenger:            $($_.Messenger)" -ForegroundColor DarkGray
-                    Write-Host "Phone number:         $($_.MobilePhone)" -ForegroundColor DarkGray
-                } elseif ($_.Messenger -and !$_.MobilePhone) {
+                if ($_.Messenger) {
                     Set-ADUser -Identity $_.SamAccountName -Mobile $_.Messenger
-                    Write-Host "Messenger:            $($_.Messenger)" -ForegroundColor DarkGray
-                } elseif (!$_.Messenger -and $_.MobilePhone) {
-                    Set-ADUser -Identity $_.SamAccountName -Mobile $_.MobilePhone
-                    Write-Host "Phone number:         $($_.MobilePhone)" -ForegroundColor DarkGray
+                    Write-Host "Messenger:            $($_.Messenger)" -ForegroundColor Gray
+                } elseif (!$_.Messenger) {
+                    Set-ADUser -Identity $_.SamAccountName -Mobile $null
+                    Write-Host "Messenger:            NOT PRESENT; NULL'D!" -ForegroundColor Red
                 } else {
                     #SKIPPING
-                        #INFO: TECHNICALLY, THE OFFICEPHONE ATTRIBUTE FROM AD REPLICATES TO AAD'S BUSINESSPHONES ATTRIBUTE.
-                        #HOWEVER, THIS IS NEITHER STANDARDIZED NOR DOCUMENTED, AND CAN BE CHANGED ANY TIME BY MICROSOFT.
-                            #DO THIS AT YOUR OWN RISK.
                 }
+
+                if ($_.MobilePhone) {
+                    Set-ADUser -Identity $_.SamAccountName -OfficePhone "+$_.MobilePhone"
+                    Write-Host "Work/Business phone:  +$($_.MobilePhone)" -ForegroundColor Gray
+                } elseif (!$_.Messenger) {
+                    Set-ADUser -Identity $_.SamAccountName -OfficePhone $null
+                    Write-Host "Work/Business phone:  NOT PRESENT; NULL'D!" -ForegroundColor Red
+                } else {
+                    #SKIPPING
+                        #INFO: THE OFFICEPHONE ATTRIBUTE FROM AD MIRRORS TO TELEPHONENUMBER ATTRIBUTE AND THEN REPLICATES TO AAD'S BUSINESSPHONES ATTRIBUTE.
+                        #HOWEVER, THIS IS NEITHER STANDARDIZED NOR DOCUMENTED, AND THEREFORE CAN BE "FIXED" ANY TIME BY MICROSOFT.
+                            #ONCE AGAIN: OFFICEPHONE GOES TO TELEPHONENUMBER IN AD, TELEPHONE NUMBER REPLICATES TO BUSINESSPHONES IN AAD.
+                                #YET SOMEHOW MICROSOFT IS CONSIDERED ENTERPRISE.
+                                    #4 TRILLION USD MARKET CAPITALIZATION BTW.
+                }
+
+                # UNCOMMENT TO MERGE MOBILE PHONE AND MESSENGER INTO A SINGLE ATTRIBUTE IF OFFICEPHONE NO LONGER REPLICATES TO AAD
+                #if ($_.Messenger -and $_.MobilePhone) { 
+                    #Set-ADUser -Identity $_.SamAccountName -Mobile "$($_.Messenger) | +$($_.MobilePhone)"
+                    #Write-Host "Messenger:            $($_.Messenger)" -ForegroundColor DarkGray
+                    #Write-Host "Phone number:         $($_.MobilePhone)" -ForegroundColor DarkGray
+                #} elseif ($_.Messenger -and !$_.MobilePhone) {
+                    #Set-ADUser -Identity $_.SamAccountName -Mobile $_.Messenger
+                    #Write-Host "Messenger:            $($_.Messenger)" -ForegroundColor DarkGray
+                #} elseif (!$_.Messenger -and $_.MobilePhone) {
+                    #Set-ADUser -Identity $_.SamAccountName -Mobile $_.MobilePhone
+                    #Write-Host "Phone number:         $($_.MobilePhone)" -ForegroundColor DarkGray
+                #} else {
+                    #SKIPPING
+                #}
 
                 if ($_.ProxyAddress1 -like "smtp:*@$domainvariable") {
                     Set-ADUser -Identity $_.SamAccountName -Add @{ProxyAddresses=$_.ProxyAddress1}
