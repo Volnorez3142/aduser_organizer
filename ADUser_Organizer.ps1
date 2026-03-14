@@ -216,6 +216,9 @@ if ($safehouse -eq "yes") {
                     Write-Host "Phone number:         $($_.MobilePhone)" -ForegroundColor DarkGray
                 } else {
                     #SKIPPING
+                        #INFO: TECHNICALLY, THE OFFICEPHONE ATTRIBUTE FROM AD REPLICATES TO AAD'S BUSINESSPHONES ATTRIBUTE.
+                        #HOWEVER, THIS IS NEITHER STANDARDIZED NOR DOCUMENTED, AND CAN BE CHANGED ANY TIME BY MICROSOFT.
+                            #DO THIS AT YOUR OWN RISK.
                 }
 
                 if ($_.ProxyAddress1 -like "smtp:*@$domainvariable") {
