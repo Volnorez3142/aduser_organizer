@@ -2,7 +2,7 @@ A mediocre attempt to automate the process of Active Directory user attribute an
 Instructions unwrap throughout the script itself.
 Not remotely ideal, but way better than updating 10+ amount of users manually, and saves hours of time that can be better channeled elsewhere.
 
-**ModerCSV or LibreCalc is recommended to build and maintain the CSV file. Alternatively, both those programs can past cells from XLSX files.**
+**ModernCSV or LibreCalc is recommended to build and maintain the CSV file. Alternatively, both those programs can past cells from XLSX files.**
 The reason is simple: Excel, upon opening a CSV file, "lowers the accuracy" of 15+ digit numbers (a phone number, for example), effectively transforming it into a text that states 9E+-something-something.
 
 **As any other Powershell file, you might need to unlock this before running. Is done through RMB > Properties > Unlock.**
@@ -21,8 +21,9 @@ Those columns are:
 10. ProxyAddress1 - additional proxy address or the smtp (format: smtp:email@email.com; NOT to be confused with SMTP) 
 11. ProxyAddress2 - additional proxy address or the smtp (format: smtp:email@email.com; NOT to be confused with SMTP) 
 12. ProxyAddress3 - additional proxy address or the smtp (format: smtp:email@email.com; NOT to be confused with SMTP)
+13. TargetDN - target organizational unit's distinguishedName attribute (should be copied AS IS)
 
-DisplayName, Manager, Messenger, MobilePhone and ProxyAddress1/2/3 fields can be left empty since the script itself doesn't necessarily require them, at the same time collecting invalid inputs into those fields and listing them at the very end.
+DisplayName, Manager, Messenger, MobilePhone, ProxyAddress1/2/3 and TargetDN fields can be left empty since the script itself doesn't necessarily require them, at the same time collecting invalid inputs into those fields and listing them at the very end.
 All the other fields are mandatory. 
 
 The script refers to SamAccountName in order to grab the user from AD and change it's attributes, therefore the user should already be created before running the script.
