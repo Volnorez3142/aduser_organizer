@@ -229,7 +229,7 @@ if ($safehouse -eq "yes") {
                                     #4 TRILLION USD MARKET CAPITALIZATION BTW.
                 }
 
-                # UNCOMMENT TO MERGE MOBILE PHONE AND MESSENGER INTO A SINGLE ATTRIBUTE IF OFFICEPHONE NO LONGER REPLICATES TO AAD
+                #UNCOMMENT TO MERGE MOBILE PHONE AND MESSENGER INTO A SINGLE ATTRIBUTE IF OFFICEPHONE NO LONGER REPLICATES TO AAD
                 #Set-ADUser -Identity $_.SamAccountName -OfficePhone $null #CLEARS TELEPHONENUMBER ATTRIBUTE IN AD AND BUSINESSPHONES IN AAD
                 #if ($_.Messenger -and $_.MobilePhone) { 
                     #Set-ADUser -Identity $_.SamAccountName -Mobile "$($_.Messenger) | +$($_.MobilePhone)"
@@ -297,6 +297,14 @@ Write-Host $usernotfoundlist -ForegroundColor Red
 Write-Host $managernotsetlist -ForegroundColor Red
 Write-Host $managernotfoundlist -ForegroundColor Red
 Write-Host $incorrectsmtplist -ForegroundColor Red
+
+Write-Host "Do you want to run an AD-AAD syncrhonization cycle? [yes/no(else)]"
+$synccycleprompt = Read-Host
+if ($synccycleprompt -eq "yes") {
+    Start-ADSyncSyncCycle -PolicyType Delta
+} else {
+    #SKIPPING
+}
 
 #STOPPING THE TRANSCRIPT
 Write-Host " "
