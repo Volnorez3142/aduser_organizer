@@ -51,25 +51,25 @@ $switchcasemessage = @"
 * 10. ProxyAddress1 - additional proxy address or the smtp (format: smtp:email@email.com; *
 * NOT to be confused with SMTP)                                                           *
 * 11. ProxyAddress2 - additional proxy address or the smtp (format: smtp:email@email.com; *
-* NOT to be confused with SMTP) 
+* NOT to be confused with SMTP)                                                           *
 * 12. ProxyAddress3 - additional proxy address or the smtp (format: smtp:email@email.com; *
 * NOT to be confused with SMTP)                                                           *
+* 13. TargetDN - target organizational unit's distinguishedName attribute (AS IS)         *
 *                                                                                         *
-* DisplayName, Manager, Messenger, MobilePhone and ProxyAddress1/2/3 fields can be left   *
-* empty since the script itself doesn't necessarily require them, at the same time        *
+* DisplayName, Manager, Messenger, MobilePhone, ProxyAddress1/2/3 and TargetDN fields can *
+* be left empty since the script doesn't necessarily require them, at the same time       *
 * collecting invalid inputs into those fields and listing them at the very end.           *
 * All the other fields are mandatory.                                                     *
 *******************************************************************************************
-Input: 
 "@
 
 Write-Host $switchcasemessage -ForegroundColor Cyan
-$fileswitchcase = Read-Host
+$fileswitchcase = Read-Host -Prompt "ANSWER"
 Write-Output "You've entered: $fileswitchcase"
 
 if ($fileswitchcase -eq 1) {
     New-Item -Path "c:\" -Name "by3142" -ItemType "directory"
-    Get-ADUser -Filter * -Properties CN, DisplayName, Title, Description, Department, Manager, Company, EmailAddress, MobilePhone, SamAccountName | Where { $_.Enabled -eq $True} | export-csv C:\by3142\adusers.csv
+    Get-ADUser -Filter * -Properties CN, DisplayName, Title, Description, Department, Manager, Company, EmailAddress, MobilePhone, SamAccountName, DistinguishedName | Where { $_.Enabled -eq $True} | export-csv C:\by3142\adusers.csv
     Read-Host -Prompt "CHECK C:\BY3142 FOR THE USERS CSV. EDIT THE FIELDS AS NEEDED AND PRESS ANY KEY TO CONTINUE 1/2"
     Read-Host -Prompt "CHECK C:\BY3142 FOR THE USERS CSV. EDIT THE FIELDS AS NEEDED AND PRESS ANY KEY TO CONTINUE 2/2"
     $filepath = "C:\by3142\adusers.csv"
@@ -78,8 +78,7 @@ if ($fileswitchcase -eq 1) {
     $filepath = "C:\by3142\adusers.csv"
     Write-Output "Filepath set to: $filepath"
 } elseif ($fileswitchcase -eq 3) {
-    Write-Output "Please enter the absolute file path below: "
-    $filepath = Read-Host
+    $filepath = Read-Host -Prompt "ENTER FILE'S ABSOLUTE PATH"
     Write-Output "Filepath set to: $filepath"
 } else {
     Read-Host -Prompt "Answer not found. Press Enter to exit"
@@ -96,10 +95,25 @@ $domainvariable = @"
 * when applying the script.         *
 * Example: sakurada.lan             *    
 *************************************
-*DOMAIN:
 "@
 Write-Host $domainvariable -ForegroundColor Cyan
-$domainvariable = Read-Host
+$domainvariable = Read-Host -Prompt "DOMAIN"
+
+#OBJECT MOVE TO TARGET DN PROMPT
+$adobjmoveprompt = @"
+**************************************
+* Do you wish to active the cycle    *
+* that changes AD object's DN's and  *
+* moves them to target OU?           *
+*                                    *
+* This will only work on objects     *
+* that have TargetDN variable set.   *
+*                                    * 
+*              [yes/no]              *
+**************************************
+"@
+Write-Host $adobjmoveprompt -ForegroundColor Red
+$adobjmoveprompt = Read-Host -Prompt "ANSWER"
 
 #YESNO-SAFEHOUSE
 $safehousemessage = @"
@@ -114,7 +128,7 @@ $safehousemessage = @"
 ****************************************************
 "@
 Write-Host $safehousemessage -ForegroundColor Yellow
-$safehouse = read-host
+$safehouse = Read-Host -Prompt "ANSWER"
 Write-Output "You've entered: $safehouse"
 
 #DECLARING THE VARIABLES FOR ERROR MESSAGES, IMPORTING THE CSV FILE AND STARTING THE AD CONFIGURATION
@@ -154,6 +168,13 @@ $incorrectsmtplist = @"
 *LIST:
 
 "@
+$incorrectdnlist = @"
+**********************************************
+*     DISTINGUISHED NAMES INCORRECT FOR:     *        
+**********************************************
+*LIST:
+
+"@
 
 if ($safehouse -eq "yes") { 
     $adusers | ForEach-Object {
@@ -162,7 +183,7 @@ if ($safehouse -eq "yes") {
             Try {
                 $checksamaccname = Get-ADUser $_.SamAccountName
             } catch {
-                #Catch function doesn't inherit from global environment so we gotta do an extra ifelse below
+                #Catch function inherits from global environment only if you put $global: before the variable, and I don't want to do that here.
             }
             
             if ($error) {
@@ -189,7 +210,7 @@ if ($safehouse -eq "yes") {
                     Try {
                         $varmanagerinfo = Get-ADUser $_.ManagerSamAccName
                     } catch {
-                        #still not inheriting.
+                        #still no desire.
                     }
                     
                     if ($error) {
@@ -209,7 +230,7 @@ if ($safehouse -eq "yes") {
                     Write-Host "Messenger:            $($_.Messenger)" -ForegroundColor Gray
                 } elseif (!$_.Messenger) {
                     Set-ADUser -Identity $_.SamAccountName -Mobile $null
-                    Write-Host "Messenger:            NOT PRESENT; NULL'D!" -ForegroundColor Red
+                    Write-Host "Messenger:            NOT PRESENT; NULL'D!" -ForegroundColor DarkRed
                 } else {
                     #SKIPPING
                 }
@@ -219,7 +240,7 @@ if ($safehouse -eq "yes") {
                     Write-Host "Work/Business phone:  +$($_.MobilePhone)" -ForegroundColor Gray
                 } elseif (!$_.Messenger) {
                     Set-ADUser -Identity $_.SamAccountName -OfficePhone $null
-                    Write-Host "Work/Business phone:  NOT PRESENT; NULL'D!" -ForegroundColor Red
+                    Write-Host "Work/Business phone:  NOT PRESENT; NULL'D!" -ForegroundColor DarkRed
                 } else {
                     #SKIPPING
                         #INFO: THE OFFICEPHONE ATTRIBUTE FROM AD MIRRORS TO TELEPHONENUMBER ATTRIBUTE AND THEN REPLICATES TO AAD'S BUSINESSPHONES ATTRIBUTE.
@@ -284,7 +305,40 @@ if ($safehouse -eq "yes") {
                     $incorrectsmtplist = $incorrectsmtplist + " $($_.ProxyAddress3) `n"
                 }
 
-                Write-Host "DONE!" -ForegroundColor DarkGreen
+                if ($adobjmoveprompt -eq "yes") {
+                    if (!$_.TargetDN) {
+                        Write-Host "TARGET DN:            EMPTY" -ForegroundColor DarkGray
+                        #SKIPPING
+                    } elseif ($_.TargetDN) {
+                        Write-Output " "
+                        Write-Host "MOVING USER TO:       $($_.TargetDN)" -ForegroundColor Blue
+                        try {
+                            Get-ADUser $_.SamAccountName | Move-ADObject -TargetPath $_.TargetDN -ErrorAction Stop
+                            Write-Host "USER MOVED!" -ForegroundColor DarkGreen
+                        } catch {
+                            Write-Host "ERROR: DN INCORRECT OR NOT FOUND!" -ForegroundColor Red
+                            $global:incorrectdnlist = $global:incorrectdnlist + " $global:SamAccountName `n"
+                        }
+                        $varuserdn = Get-ADUser $_.SamAccountName | Select DistinguishedName
+                        $varuserdisplayname = Get-ADUser $_.SamAccountName | Select Name
+                        if ($varuserdn[0].DistinguishedName -eq "CN=$($varuserdisplayname[0].Name),$($_.TargetDN)") {
+                            Write-Host "DISTINGUISHED NAMES MATCHED!" -ForegroundColor DarkGreen
+                        } else {
+                            Write-Host "ERROR: DISTINGUISHED NAMES NOT MATCHED!" -ForegroundColor Red
+                            Write-Host "USER'S DN:            $($varuserdn[0].DistinguishedName)" -ForegroundColor Red
+                            Write-Host "TARGET DN:            CN=$($varuserdisplayname[0].Name),$($_.TargetDN)" -ForegroundColor Red
+                            $incorrectdnlist = $incorrectdnlist + " $($_.SamAccountName) `n"
+                        }
+                    } else { 
+                        Write-Host "TARGET DN ERROR. CHECK THE CSV FILE." -ForegroundColor Red
+                        $incorrectdnlist = $incorrectdnlist + " $($_.SamAccountName) `n"
+                    }
+                } else {
+                    #SKIPPING
+                }
+
+                Write-Output " "
+                Write-Host "DONE!" -ForegroundColor Green
                 Write-Output "======================="
             }
         }
@@ -294,29 +348,38 @@ if ($safehouse -eq "yes") {
 } 
 
 Write-Host $usernotfoundlist -ForegroundColor Red
+Write-Output " "
 Write-Host $managernotsetlist -ForegroundColor Red
+Write-Output " "
 Write-Host $managernotfoundlist -ForegroundColor Red
+Write-Output " "
 Write-Host $incorrectsmtplist -ForegroundColor Red
+Write-Output " "
+Write-Host $incorrectdnlist -ForegroundColor Red
+Write-Output " "
 
-Write-Host "Do you want to run an AD-AAD syncrhonization cycle? [yes/no(else)]"
-$synccycleprompt = Read-Host
-if ($synccycleprompt -eq "yes") {
-    Start-ADSyncSyncCycle -PolicyType Delta
-} else {
-    #SKIPPING
-}
-
-#STOPPING THE TRANSCRIPT
-Write-Host " "
-Stop-Transcript
-
-Read-Host -Prompt "
+$by3142 = @"
 ___.           ________  ____   _____ ________  
 \_ |__ ___.__. \_____  \/_   | /  |  |\_____  \ 
  | __ <   |  |   _(__  < |   |/   |  |_/  ____/ 
  | \_\ \___  |  /       \|   /    ^   /       \ 
  |___  / ____| /______  /|___\____   |\_______ \
      \/\/             \/          |__|        \/
-       END OF SCRIPT. PRESS ENTER TO EXIT.       
-   THE TRANSCRIPT CAN BE FOUND ON THE DESKTOP.  
-                        "
+                 END OF SCRIPT.                
+         https://github.com/Volnorez3142        
+"@
+Write-Host $by3142 -ForegroundColor Magenta
+
+Write-Output " "
+Write-Host "Do you want to run an AD-AAD syncrhonization cycle? [yes/no(else)]"
+$synccycleprompt = Read-Host
+if ($synccycleprompt -eq "yes") {
+    Start-ADSyncSyncCycle -PolicyType Delta
+    Read-Host -Prompt "END OF SCRIPT. THE TRANSCRIPT CAN BE FOUND ON THE DESKTOP. PRESS ENTER TO EXIT."
+} else {
+    #SKIPPING
+    Read-Host -Prompt "END OF SCRIPT. THE TRANSCRIPT CAN BE FOUND ON THE DESKTOP. PRESS ENTER TO EXIT."
+}
+
+#STOPPING THE TRANSCRIPT
+Stop-Transcript
