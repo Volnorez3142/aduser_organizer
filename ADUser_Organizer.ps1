@@ -230,6 +230,7 @@ if ($safehouse -eq "yes") {
                 }
 
                 # UNCOMMENT TO MERGE MOBILE PHONE AND MESSENGER INTO A SINGLE ATTRIBUTE IF OFFICEPHONE NO LONGER REPLICATES TO AAD
+                #Set-ADUser -Identity $_.SamAccountName -OfficePhone $null #CLEARS TELEPHONENUMBER ATTRIBUTE IN AD AND BUSINESSPHONES IN AAD
                 #if ($_.Messenger -and $_.MobilePhone) { 
                     #Set-ADUser -Identity $_.SamAccountName -Mobile "$($_.Messenger) | +$($_.MobilePhone)"
                     #Write-Host "Messenger:            $($_.Messenger)" -ForegroundColor DarkGray
