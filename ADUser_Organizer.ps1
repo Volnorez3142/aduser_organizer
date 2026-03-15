@@ -215,7 +215,7 @@ if ($safehouse -eq "yes") {
                 }
 
                 if ($_.MobilePhone) {
-                    Set-ADUser -Identity $_.SamAccountName -OfficePhone "+$_.MobilePhone"
+                    Set-ADUser -Identity $_.SamAccountName -OfficePhone "+$($_.MobilePhone)"
                     Write-Host "Work/Business phone:  +$($_.MobilePhone)" -ForegroundColor Gray
                 } elseif (!$_.Messenger) {
                     Set-ADUser -Identity $_.SamAccountName -OfficePhone $null
