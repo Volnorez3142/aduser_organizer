@@ -179,6 +179,7 @@ $incorrectdnlist = @"
 if ($safehouse -eq "yes") { 
     $adusers | ForEach-Object {
         if ($_.UserPrincipalName -like "*$domainvariable") {
+            Set-ADUser -Identity $_.SamAccountName -Clear ProxyAddresses #CLEARS ALL THE PROXY ADDRESSES BEFORE ASSIGNING AS PER ADUSERS.CSV
             $error.clear()
             Try {
                 $checksamaccname = Get-ADUser $_.SamAccountName
